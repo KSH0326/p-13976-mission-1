@@ -1,13 +1,10 @@
 package com.domain.wiseSaying.controller
 
-import com.Rq
-import com.WiseSaying
-import com.domain.wiseSaying.service.WiseSayingService
+import com.global.Rq.Rq
+import com.global.bean.SingletonScope
 
 class WiseSayingController {
-    private var lastId = 0
-    private val wiseSayings = mutableListOf<WiseSaying>()
-    private val wiseSayingService = WiseSayingService()
+    private val wiseSayingService = SingletonScope.wiseSayingService
 
     fun actionWrite(rq: Rq) {
         print("명언 : ")
@@ -21,18 +18,14 @@ class WiseSayingController {
     }
 
     fun actionList(rq: Rq) {
-        if (wiseSayings.isEmpty()) {
-            if (wiseSayings.isEmpty()) {
-                println("등록된 명언이 없습니다.")
-                return
-            } else {
-                println("번호 / 작가 / 명언")
-                println("-------------------------------")
-                wiseSayings.forEach {
-                    println("${it.id} : ${it.author} (${it.content})")
-                }
-            }
+        if (wiseSayingService.isEmpty()) {
+            println("등록된 명언이 없습니다.")
+            return
         }
+
+        println("번호 / 작가 / 명언")
+
+        println("----------------------")
     }
 
     fun actionDelete(rq: Rq) {
@@ -43,45 +36,40 @@ class WiseSayingController {
             return
         }
 
-        val wiseSaying = wiseSayings.firstOrNull { it.id == id }
+        val wiseSaying = wiseSayingService
+            .findById(id)
 
         if (wiseSaying == null) {
-            println("해당 id의 명언은 존재하지 않습니다.")
+            println("${id}번 명언은 존재하지 않습니다.")
             return
-        }
-
-        wiseSayings.remove(wiseSaying)
-
-        println("${id}번 명언을 삭제하였습니다.")
     }
 
     fun actionUpdate(rq: Rq) {
-        if (wiseSayings.isEmpty()) {
-            println("명언이 없습니다.")
-            return
-        }
         val id = rq.getParamValueAsInt("id", 0)
 
         if (id == 0) {
-            println("id를 정확히 입력해주세요")
+            println("id를 정확히 입력해주세요.")
             return
         }
 
-        val wiseSaying = wiseSayings.find { it.id == id }
+        val wiseSaying = wiseSayingService.findById(id)
+
         if (wiseSaying == null) {
-            println("해당 id의 명언이 없습니다.")
+            println("${id}번 명언은 존재하지 않습니다.")
             return
         }
 
         println("명언(기존) : ${wiseSaying.content}")
         print("명언 : ")
-        val newContent = readlnOrNull()!!.trim()
+        val content = readlnOrNull()!!.trim()
+
         println("작가(기존) : ${wiseSaying.author}")
         print("작가 : ")
-        val newAuthor = readlnOrNull()!!.trim()
+        val author = readlnOrNull()!!.trim()
 
-        wiseSaying.update(newContent, newAuthor)
+        wiseSayingService.update(wiseSaying, content, author)
 
-        println("${id}번째 명언이 수정되었습니다.")
+        println("${id}번 명언을 수정하였습니다.")
+        }
     }
 }

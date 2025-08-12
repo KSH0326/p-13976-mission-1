@@ -1,10 +1,12 @@
 package com
 
-import com.domain.wiseSaying.controller.WiseSayingController
+import com.global.Rq.Rq
+import com.global.bean.SingletonScope
 
 class App {
     fun run() {
-        val wiseSayingController = WiseSayingController()
+        val wiseSayingController = SingletonScope.wiseSayingController
+        val wiseSayingService = SingletonScope.wiseSayingService
 
         println("== 명언 앱 ==")
 

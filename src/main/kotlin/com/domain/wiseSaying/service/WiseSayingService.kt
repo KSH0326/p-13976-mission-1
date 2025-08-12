@@ -1,10 +1,10 @@
 package com.domain.wiseSaying.service
 
 import com.WiseSaying
-import com.domain.wiseSaying.repository.WiseSayingRepository
+import com.global.bean.SingletonScope
 
 class WiseSayingService {
-    private val wiseSayingRepository = WiseSayingRepository()
+    private val wiseSayingRepository = SingletonScope.wiseSayingRepository
 
     fun write(content: String, author: String): WiseSaying {
         return wiseSayingRepository.save(WiseSaying(content, author))
